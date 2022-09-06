@@ -1,48 +1,70 @@
-
 const { buildSchema } = require('graphql')
 
 
-//Posts Type
 const schema = buildSchema(`
   type Post {
     id: ID
     title: String!
-    image: String!
+    imageURL: String!
     permaLink: String!
     readTime: Int!
-    author: [Author]
+    likes: Int
+    description: String
+    author: User!
+    createdAt: String 
   }
-
-  type Author {
-    id: ID
-    name: String
-    username: String
-    image: String
-  }
-
+  
   input PostInput {
     id: ID
     title: String!
-    image: String!
+    imageURL: String!
     permaLink: String!
     readTime: Int!
-    author: [AuthorInput]
+    likes: Int
+    description: String
+    author: UserInput!
   }
 
-  input AuthorInput {
-    id: ID
-    name: String
-    username: String
-    image: String
+  type BookmarkList{
+    id: ID!
+    user_id: String
+    post_id: Post
+  }
+
+  input BookmarkInput{
+    id: ID!
+    user_id: ID
+    post_id: ID
+  }
+
+  type User {
+    _id: String
+    username: String!
+    imageURL: String!
+    name: String!
+    email: String
+  }
+
+  input UserInput {
+    _id: String
+    username: String!
+    imageURL: String!
+    name: String!
+    email: String
   }
   
   type Query {
     getAllPosts: [Post]
+    getAllUsers: [User]
     getPost(id: ID): Post
+    getUser(id: ID): User
+    getBookmarkByUserID(id: ID): [BookmarkList]
   }
 
   type Mutation {
     createPost(input: PostInput): Post
+    addUser(input: UserInput): User
+    addBookmark(input: BookmarkInput): BookmarkList
   }
 `)
 

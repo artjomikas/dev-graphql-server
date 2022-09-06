@@ -1,25 +1,11 @@
 const mongoose = require('mongoose');
-
-const AuthorSchema = new mongoose.Schema({
-  title: {
-    type: String,
-  },
-  username: {
-    type: String,
-  },
-  name: {
-    type: String,
-  },
-  image: {
-    type: String,
-  },
-})
+const UserSchema = require('./User')
 
 const PostSchema = new mongoose.Schema({
   title: {
     type: String,
   },
-  image: {
+  imageURL: {
     type: String,
   },
   permaLink: {
@@ -28,10 +14,15 @@ const PostSchema = new mongoose.Schema({
   readTime: {
     type: Number,
   },
-  author: {
-    type: [AuthorSchema],
+  like: {
+    type: Number,
   },
-
-})
+  description: {
+    type: String,
+  },
+  author: {
+    type: UserSchema
+  }
+}, { timestamps: true })
 
 module.exports = mongoose.model('Posts', PostSchema)
