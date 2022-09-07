@@ -26,15 +26,15 @@ const schema = buildSchema(`
   }
 
   type BookmarkList{
-    id: ID!
-    user_id: String
-    post_id: Post
+    id: ID
+    user_id: String!
+    post_id: Post!
   }
 
   input BookmarkInput{
-    id: ID!
-    user_id: ID
-    post_id: ID
+    id: ID
+    user_id: ID!
+    post_id: ID!
   }
 
   type User {

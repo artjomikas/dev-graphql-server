@@ -36,8 +36,8 @@ const root = {
     const user = new User({ ...input })
     return user.save()
   },
-  getBookmark: ({id}) => {
-    return Bookmark.find({user_id : id}).populate('post_id', 'title')
+  getBookmarkByUserID: ({id}) => {
+    return Bookmark.find({user_id : id}).populate('post_id')
   },
   addBookmark: ({ input }) => {
     const bookmark = new Bookmark({ ...input })
