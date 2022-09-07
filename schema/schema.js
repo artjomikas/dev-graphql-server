@@ -59,12 +59,14 @@ const schema = buildSchema(`
     getPost(id: ID): Post
     getUser(id: ID): User
     getBookmarkByUserID(id: ID): [BookmarkList]
+    getBookmarkByUserIDAndPostID(user_id: ID, post_id: ID): [BookmarkList]
   }
 
   type Mutation {
     createPost(input: PostInput): Post
     addUser(input: UserInput): User
     addBookmark(input: BookmarkInput): BookmarkList
+    removeBookmark(id: ID): BookmarkList
   }
 `)
 

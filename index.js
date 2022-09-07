@@ -36,13 +36,19 @@ const root = {
     const user = new User({ ...input })
     return user.save()
   },
-  getBookmarkByUserID: ({id}) => {
-    return Bookmark.find({user_id : id}).populate('post_id')
+  getBookmarkByUserID: ({ id }) => {
+    return Bookmark.find({ user_id: id }).populate('post_id')
+  },
+  getBookmarkByUserIDAndPostID: ({ user_id, post_id }) => {
+    return Bookmark.find({ user_id: user_id, post_id: { _id: post_id } }).populate('post_id')
   },
   addBookmark: ({ input }) => {
     const bookmark = new Bookmark({ ...input })
     return bookmark.save()
   },
+  removeBookmark: ({ id }) => {
+    return Bookmark.findByIdAndRemove(id)
+  }
 }
 
 app.use('/graphql', graphqlHTTP({
