@@ -28,6 +28,9 @@ const root = {
   getPost: ({ id }) => {
     return Post.findById(id);
   },
+  getLikes: ({ liked_user_id }) => {
+    return Post.find({ 'likes.liked_user_id' : liked_user_id });
+  },
   createPost: ({ input }) => {
     const post = new Post({ ...input })
     return post.save()

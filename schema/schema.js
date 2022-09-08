@@ -8,10 +8,11 @@ const schema = buildSchema(`
     imageURL: String!
     permaLink: String!
     readTime: Int!
-    likes: Int
+    likesNum: Int
     description: String
     author: User!
     createdAt: String 
+    likes: [Like]
   }
   
   input PostInput {
@@ -20,9 +21,10 @@ const schema = buildSchema(`
     imageURL: String!
     permaLink: String!
     readTime: Int!
-    likes: Int
+    likesNum: Int
     description: String
     author: UserInput!
+    likes: LikeInput
   }
 
   type BookmarkList{
@@ -45,6 +47,16 @@ const schema = buildSchema(`
     email: String
   }
 
+  type Like {
+    id: ID, 
+    liked_user_id: String
+  }
+
+  input LikeInput {
+    id: ID, 
+    liked_user_id: String
+  }
+
   input UserInput {
     _id: String
     username: String!
@@ -57,6 +69,7 @@ const schema = buildSchema(`
     getAllPosts: [Post]
     getAllUsers: [User]
     getPost(id: ID): Post
+    getLikes(liked_user_id: String): [Post]
     getUser(id: ID): User
     getBookmarkByUserID(id: ID): [BookmarkList]
     getBookmarkByUserIDAndPostID(user_id: ID, post_id: ID): [BookmarkList]
