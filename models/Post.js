@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const UserSchema = require('./User')
 const LikeSchema = require('./Likes')
+const BookMarkSchema = require('./Bookmark')
 
 const PostSchema = new mongoose.Schema({
   title: {
@@ -25,7 +26,10 @@ const PostSchema = new mongoose.Schema({
     type: UserSchema
   },
   likes: {
-    type: [LikeSchema]
+    type: [String]
+  },
+  bookmarks: {
+    type: [String]
   }
 }, { timestamps: true })
 

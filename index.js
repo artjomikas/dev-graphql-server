@@ -28,8 +28,9 @@ const root = {
   getPost: ({ id }) => {
     return Post.findById(id);
   },
-  getLikes: ({ liked_user_id }) => {
-    return Post.find({ 'likes.liked_user_id' : liked_user_id });
+  getPostInfo: ({ user_id }) => {
+    // return Post.find({ $or: [{ 'likes.liked_user_id': user_id }, { 'bookmarks.bookmarked_user_id': user_id }] });
+    return Post.find({ 'likes.liked_user_id': user_id });
   },
   createPost: ({ input }) => {
     const post = new Post({ ...input })
@@ -38,6 +39,9 @@ const root = {
   addUser: ({ input }) => {
     const user = new User({ ...input })
     return user.save()
+  },
+  addLike: ({ post_id, user_id }) => {
+    return Post.findOneAndUpdate({_id: post_id}, { $push: { likes: user_id } });
   },
   getBookmarkByUserID: ({ id }) => {
     return Bookmark.find({ user_id: id }).populate('post_id')
