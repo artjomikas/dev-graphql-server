@@ -8,4 +8,3 @@ const BookMarkSchema = new mongoose.Schema({
 )
 
 module.exports = mongoose.model('Bookmarks', BookMarkSchema)
-module.exports = BookMarkSchema

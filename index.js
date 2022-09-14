@@ -4,7 +4,7 @@ const cors = require('cors')
 const schema = require('./schema/schema.js')
 const connectDB = require('./config/config')
 const Post = require('./models/Post')
-const User = require('./models/User')
+const {userModel} = require('./models/User')
 const colors = require('colors');
 const Bookmark = require('./models/Bookmark')
 
@@ -20,10 +20,10 @@ const root = {
     return Post.find()
   },
   getAllUsers: () => {
-    return User.find()
+    return userModel.find()
   },
   getUser: ({ id }) => {
-    return User.findById(id)
+    return userModel.find({"_id" : id})
   },
   getPost: ({ id }) => {
     return Post.findById(id);
@@ -37,7 +37,7 @@ const root = {
     return post.save()
   },
   addUser: ({ input }) => {
-    const user = new User({ ...input })
+    const user = new userModel({ ...input })
     return user.save()
   },
   addLike: ({ post_id, user_id }) => {

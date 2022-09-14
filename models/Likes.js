@@ -7,4 +7,3 @@ const LikeSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 module.exports = mongoose.model('Likes', LikeSchema)
-module.exports = LikeSchema

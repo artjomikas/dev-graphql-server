@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const UserSchema = require('./User')
-const LikeSchema = require('./Likes')
-const BookMarkSchema = require('./Bookmark')
+const { UserSchema } = require('./User')
 
 const PostSchema = new mongoose.Schema({
   title: {
