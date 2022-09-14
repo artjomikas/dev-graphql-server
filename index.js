@@ -4,7 +4,7 @@ const cors = require('cors')
 const schema = require('./schema/schema.js')
 const connectDB = require('./config/config')
 const Post = require('./models/Post')
-const {userModel} = require('./models/User')
+const { userModel } = require('./models/User')
 const colors = require('colors');
 const Bookmark = require('./models/Bookmark')
 
@@ -23,14 +23,14 @@ const root = {
     return userModel.find()
   },
   getUser: ({ id }) => {
-    return userModel.find({"_id" : id})
+    return userModel.find({ "_id": id })
   },
   getPost: ({ id }) => {
     return Post.findById(id);
   },
-  getPostInfo: ({ user_id }) => {
+  getBookmarks: ({ user_id }) => {
     // return Post.find({ $or: [{ 'likes.liked_user_id': user_id }, { 'bookmarks.bookmarked_user_id': user_id }] });
-    return Post.find({ 'likes.liked_user_id': user_id });
+    return Post.find({ bookmarks: user_id });
   },
   createPost: ({ input }) => {
     const post = new Post({ ...input })
@@ -41,20 +41,16 @@ const root = {
     return user.save()
   },
   addLike: ({ post_id, user_id }) => {
-    return Post.findOneAndUpdate({_id: post_id}, { $push: { likes: user_id } });
+    return Post.findOneAndUpdate({ _id: post_id }, { $push: { likes: user_id } });
   },
-  getBookmarkByUserID: ({ id }) => {
-    return Bookmark.find({ user_id: id }).populate('post_id')
+  removeLike: ({ post_id, user_id }) => {
+    return Post.findOneAndUpdate({ _id: post_id }, { $pull: { likes: user_id } });
   },
-  getBookmarkByUserIDAndPostID: ({ user_id, post_id }) => {
-    return Bookmark.find({ user_id: user_id, post_id: { _id: post_id } }).populate('post_id')
+  addBookmark: ({ post_id, user_id }) => {
+    return Post.findOneAndUpdate({ _id: post_id }, { $push: { bookmarks: user_id } });
   },
-  addBookmark: ({ input }) => {
-    const bookmark = new Bookmark({ ...input })
-    return bookmark.save()
-  },
-  removeBookmark: ({ id }) => {
-    return Bookmark.findByIdAndRemove(id)
+  removeBookmark: ({ post_id, user_id }) => {
+    return Post.findOneAndUpdate({ _id: post_id }, { $pull: { bookmarks: user_id } });
   }
 }
 

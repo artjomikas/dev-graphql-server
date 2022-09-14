@@ -14,6 +14,8 @@ const schema = buildSchema(`
     createdAt: String 
     likes: [String]
     bookmarks: [String]
+    status: String
+    
   }
 
   type User {
@@ -35,6 +37,7 @@ const schema = buildSchema(`
     author: UserInput!
     likes: String
     bookmarks: String
+    status: String
   }
 
   input UserInput {
