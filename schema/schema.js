@@ -52,6 +52,7 @@ const schema = buildSchema(`
     getAllPosts: [Post]
     getPost(id: ID): Post
     getBookmarks(user_id: String): [Post]
+    getLikes(user_id: String): [Post]
     getAllUsers: [User]
     getUser(id: String): [User]
   }

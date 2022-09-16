@@ -32,6 +32,14 @@ const root = {
     // return Post.find({ $or: [{ 'likes.liked_user_id': user_id }, { 'bookmarks.bookmarked_user_id': user_id }] });
     return Post.find({ bookmarks: user_id });
   },
+  getLikes: ({ user_id }) => {
+    // return Post.find({ $or: [{ 'likes.liked_user_id': user_id }, { 'bookmarks.bookmarked_user_id': user_id }] });
+    return Post.find({ likes: user_id });
+  },
+  getLikesCount: ({ user_id }) => {
+    // return Post.find({ $or: [{ 'likes.liked_user_id': user_id }, { 'bookmarks.bookmarked_user_id': user_id }] });
+    return Post.count({ likes: user_id });
+  },
   createPost: ({ input }) => {
     const post = new Post({ ...input })
     return post.save()
