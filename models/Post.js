@@ -28,7 +28,12 @@ const PostSchema = new mongoose.Schema({
   },
   bookmarks: {
     type: [String]
+  },
+  bookmarked: {
+    type: Boolean
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model('Posts', PostSchema)
+const Post = mongoose.model('Posts', PostSchema)
+
+module.exports = {Post, PostSchema}

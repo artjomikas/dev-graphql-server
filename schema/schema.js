@@ -3,7 +3,7 @@ const { buildSchema } = require('graphql')
 
 const schema = buildSchema(`
   type Post {
-    id: ID
+    _id: ID!
     title: String!
     imageURL: String!
     permaLink: String!
@@ -15,7 +15,15 @@ const schema = buildSchema(`
     likes: [String]
     bookmarks: [String]
     status: String
-    
+    bookmarked: Boolean
+    user_id: String
+    post_id: ID
+  }
+
+  type Bookmark {
+    id: ID
+    post_id: ID
+    user_id: String
   }
 
   type User {
@@ -27,7 +35,7 @@ const schema = buildSchema(`
   }
 
   input PostInput {
-    id: ID
+    _id: ID
     title: String!
     imageURL: String!
     permaLink: String!
@@ -50,6 +58,7 @@ const schema = buildSchema(`
   
   type Query {
     getAllPosts: [Post]
+    getAllPostsAggregate(user: String): [Post]
     getPost(id: ID): Post
     getBookmarks(user_id: String): [Post]
     getLikes(user_id: String): [Post]
@@ -64,10 +73,9 @@ const schema = buildSchema(`
     createPost(input: PostInput): Post
     addLike(post_id: ID, user_id: String ): Post
     removeLike(post_id: ID, user_id: String ): Post
-    addBookmark(post_id: ID, user_id: String ): Post
-    removeBookmark(post_id: ID, user_id: String ): Post
+    addBookmark(post_id: ID, user_id: String ): Bookmark
+    removeBookmark(id: ID ): Bookmark
   }
-
 `)
 
 module.exports = schema
