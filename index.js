@@ -25,6 +25,9 @@ const root = {
         $addFields: { likedCheck: null },
       },
       {
+        $addFields: { likes: null },
+      },
+      {
         $lookup: {
           from: "bookmarks",
           let: { user_id: user, post_id: "$_id" },
@@ -65,6 +68,14 @@ const root = {
         },
       },
       {
+        $lookup: {
+          from: "likes",
+          localField: "_id",
+          foreignField: "post_id",
+          as: "likes"
+        }
+      },
+      {
         $replaceRoot: {
           newRoot: {
             $mergeObjects: [
@@ -81,29 +92,102 @@ const root = {
       {
         $addFields: { liked: { $gt: ["$user_id_liked", null] } },
       },
+      {
+        $addFields: { likesCount: { $size: "$likes" } },
+      },
     ]);
-  },
-  getAllUsers: () => {
-    return userModel.find();
   },
   getUser: ({ id }) => {
     return userModel.find({ _id: id });
   },
   getBookmarks: ({ user_id }) => {
     // return Post.find({ $or: [{ 'likes.liked_user_id': user_id }, { 'bookmarks.bookmarked_user_id': user_id }] });
-    return Bookmark.find({ user_id_bookmarked: user_id }).populate("posts");
+    return Post.aggregate([
+      {
+        $addFields: { bookmarkedCheck: null },
+      },
+      {
+        $addFields: { likedCheck: null },
+      },
+      {
+        $addFields: { likes: null },
+      },
+      {
+        $lookup: {
+          from: "bookmarks",
+          let: { user_id: user_id, post_id: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$user_id_bookmarked", "$$user_id"] },
+                    { $eq: ["$post_id", "$$post_id"] },
+                  ],
+                },
+              },
+            },
+            { $project: { post_id: 0, readTime: 0 } },
+          ],
+          as: "bookmarkedCheck",
+        },
+      },
+      {
+        $lookup: {
+          from: "likes",
+          let: { user_id: user_id, post_id: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$user_id_liked", "$$user_id"] },
+                    { $eq: ["$post_id", "$$post_id"] },
+                  ],
+                },
+              },
+            },
+            { $project: { post_id: 0, readTime: 0 } },
+          ],
+          as: "likedCheck",
+        },
+      },
+      {
+        $lookup: {
+          from: "likes",
+          localField: "_id",
+          foreignField: "post_id",
+          as: "likes"
+        }
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              { $arrayElemAt: ["$bookmarkedCheck", 0] },
+              { $arrayElemAt: ["$likedCheck", 0] },
+              "$$ROOT",
+            ],
+          },
+        },
+      },
+      {
+        $addFields: { bookmarked: { $gt: ["$user_id_bookmarked", null] } },
+      },
+      {
+        $addFields: { liked: { $gt: ["$user_id_liked", null] } },
+      },
+      {
+        $addFields: { likesCount: { $size: "$likes" } },
+      },
+      {
+        $match: { bookmarked: true }
+      }
+    ]);
   },
   getLikes: ({ user_id }) => {
     // return Post.find({ $or: [{ 'likes.liked_user_id': user_id }, { 'bookmarks.bookmarked_user_id': user_id }] });
     return Post.find({ likes: user_id });
-  },
-  getLikesCount: ({ user_id }) => {
-    // return Post.find({ $or: [{ 'likes.liked_user_id': user_id }, { 'bookmarks.bookmarked_user_id': user_id }] });
-    return Like.count({ user_id_liked: user_id });
-  },
-  getBookmarksCount: ({ user_id }) => {
-    // return Post.find({ $or: [{ 'likes.liked_user_id': user_id }, { 'bookmarks.bookmarked_user_id': user_id }] });
-    return Post.count({ bookmarks: user_id });
   },
   addBookmark: ({ user_id, post_id }) => {
     const bookmark = new Bookmark({
@@ -116,11 +200,11 @@ const root = {
     const like = new Like({ user_id_liked: user_id, post_id: post_id });
     return like.save();
   },
-  removeBookmark: ({ id }) => {
-    return Bookmark.findOneAndRemove({ _id: id });
+  removeBookmark: ({ user_id, post_id }) => {
+    return Bookmark.findOneAndRemove({ user_id_bookmarked: user_id, post_id: post_id });
   },
-  removeLike: ({ id }) => {
-    return Like.findOneAndRemove({ _id: id });
+  removeLike: ({ user_id, post_id }) => {
+    return Like.findOneAndRemove({ user_id_liked: user_id, post_id: post_id });
   },
   createPost: ({ input }) => {
     const post = new Post({ ...input });

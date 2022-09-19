@@ -16,19 +16,21 @@ const schema = buildSchema(`
     bookmarked: Boolean
     liked: Boolean
     user_id: String
+    likesCount: Int
   }
 
   type Bookmark {
     id: ID
-    post_id: ID
-    user_id_bookmarked: String
+    post_id: ID!
+    user_id_bookmarked: String!
   }
 
   type Like {
     id: ID
-    post_id: ID
-    user_id_liked: String
+    post_id: ID!
+    user_id_liked: String!
   }
+
 
   type User {
     _id: String
@@ -61,10 +63,9 @@ const schema = buildSchema(`
   }
   
   type Query {
-    getAllPosts: [Post]
-    getAllPostsAggregate(user: String): [Post]
+    getAllPosts(user: String): [Post]
     getPost(id: ID): Post
-    getBookmarks(user_id: String): [Bookmark]
+    getBookmarks(user_id: String): [Post]
     getLikes(user_id: String): [Post]
     getLikesCount(user_id: String): Int
     getBookmarksCount(user_id: String): Int
@@ -75,10 +76,10 @@ const schema = buildSchema(`
   type Mutation {
     addUser(input: UserInput): User
     createPost(input: PostInput): Post
-    addLike(post_id: ID, user_id: String ): Like
-    removeLike(id: ID ): Post
+    addLike(post_id: ID, user_id: String): Like
+    removeLike(post_id: ID, user_id: String): Like
     addBookmark(post_id: ID, user_id: String ): Bookmark
-    removeBookmark(id: ID ): Bookmark
+    removeBookmark(post_id: ID, user_id: String): Bookmark
   }
 `)
 
