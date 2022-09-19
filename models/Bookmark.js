@@ -5,7 +5,7 @@ const BookmarkSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Posts'
   },
-  user_id: {
+  user_id_bookmarked: {
     type: String,
   }
 })

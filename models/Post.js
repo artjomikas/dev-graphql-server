@@ -31,6 +31,9 @@ const PostSchema = new mongoose.Schema({
   },
   bookmarked: {
     type: Boolean
+  },
+  liked: {
+    type: Boolean
   }
 }, { timestamps: true })
 

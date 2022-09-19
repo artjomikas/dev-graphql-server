@@ -12,18 +12,22 @@ const schema = buildSchema(`
     description: String
     author: User!
     createdAt: String 
-    likes: [String]
-    bookmarks: [String]
     status: String
     bookmarked: Boolean
+    liked: Boolean
     user_id: String
-    post_id: ID
   }
 
   type Bookmark {
     id: ID
     post_id: ID
-    user_id: String
+    user_id_bookmarked: String
+  }
+
+  type Like {
+    id: ID
+    post_id: ID
+    user_id_liked: String
   }
 
   type User {
@@ -60,7 +64,7 @@ const schema = buildSchema(`
     getAllPosts: [Post]
     getAllPostsAggregate(user: String): [Post]
     getPost(id: ID): Post
-    getBookmarks(user_id: String): [Post]
+    getBookmarks(user_id: String): [Bookmark]
     getLikes(user_id: String): [Post]
     getLikesCount(user_id: String): Int
     getBookmarksCount(user_id: String): Int
@@ -71,8 +75,8 @@ const schema = buildSchema(`
   type Mutation {
     addUser(input: UserInput): User
     createPost(input: PostInput): Post
-    addLike(post_id: ID, user_id: String ): Post
-    removeLike(post_id: ID, user_id: String ): Post
+    addLike(post_id: ID, user_id: String ): Like
+    removeLike(id: ID ): Post
     addBookmark(post_id: ID, user_id: String ): Bookmark
     removeBookmark(id: ID ): Bookmark
   }
