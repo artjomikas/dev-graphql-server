@@ -31,13 +31,17 @@ const schema = buildSchema(`
     user_id_liked: String!
   }
 
-
   type User {
     _id: String
     username: String!
     imageURL: String!
     name: String!
     email: String
+    provider: String
+    bio: String
+    twitter: String
+    github: String
+    website: String
   }
 
   input PostInput {
@@ -60,6 +64,11 @@ const schema = buildSchema(`
     imageURL: String!
     name: String!
     email: String
+    provider: String
+    bio: String
+    twitter: String
+    github: String
+    website: String
   }
   
   type Query {
@@ -75,6 +84,7 @@ const schema = buildSchema(`
 
   type Mutation {
     addUser(input: UserInput): User
+    updateUser(user_id: String, data: UserInput): User
     createPost(input: PostInput): Post
     addLike(post_id: ID, user_id: String): Like
     removeLike(post_id: ID, user_id: String): Like

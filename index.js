@@ -206,6 +206,9 @@ const root = {
   removeLike: ({ user_id, post_id }) => {
     return Like.findOneAndRemove({ user_id_liked: user_id, post_id: post_id });
   },
+  updateUser: ({user_id, data}) => {
+    return userModel.findOneAndUpdate({_id : user_id}, {$set: data})
+  },
   createPost: ({ input }) => {
     const post = new Post({ ...input });
     return post.save();

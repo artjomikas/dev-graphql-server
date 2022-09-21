@@ -16,12 +16,24 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
   },
-  createdAt: {
+  provider: {
     type: String,
-  }
+  },
+  bio: {
+    type: String,
+  },
+  twitter: {
+    type: String,
+  },
+  github: {
+    type: String,
+  },
+  website: {
+    type: String,
+  },
 }, { timestamps: true });
 
 
 const userModel = mongoose.model('Users', UserSchema)
 
-module.exports = {userModel, UserSchema}
+module.exports = { userModel, UserSchema }
