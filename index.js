@@ -8,6 +8,7 @@ const { userModel } = require("./models/User");
 const colors = require("colors");
 const Bookmark = require("./models/Bookmark");
 const Like = require("./models/Like");
+const scraper = require('./metadata-scrapper/scraper')
 
 const app = express();
 
@@ -218,6 +219,14 @@ const root = {
     return user.save();
   },
 };
+
+app.use(express.json());
+
+app.post('/api/scrape', async function(req, res){
+  const data = await scraper(req.body.url);
+  return res.send(data);
+});
+
 
 app.use(
   "/graphql",
