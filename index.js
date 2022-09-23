@@ -223,8 +223,13 @@ const root = {
 app.use(express.json());
 
 app.post('/api/scrape', async function(req, res){
-  const data = await scraper(req.body.url);
-  return res.send(data);
+  try {
+    const data = await scraper(req.body.url);
+    return res.send(data);
+  } catch (error) {
+    console.log(error);
+  }
+
 });
 
 
