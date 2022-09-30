@@ -98,6 +98,88 @@ const root = {
       },
     ]);
   },
+  getPopularPosts: ({ user }) => {
+    return Post.aggregate([
+    {
+      $addFields: { bookmarkedCheck: null },
+    },
+    {
+      $addFields: { likedCheck: null },
+    },
+    {
+      $addFields: { likes: null },
+    },
+    {
+      $lookup: {
+        from: "bookmarks",
+        let: { user_id: user, post_id: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$user_id_bookmarked", "$$user_id"] },
+                  { $eq: ["$post_id", "$$post_id"] },
+                ],
+              },
+            },
+          },
+          { $project: { post_id: 0, readTime: 0 } },
+        ],
+        as: "bookmarkedCheck",
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        let: { user_id: user, post_id: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$user_id_liked", "$$user_id"] },
+                  { $eq: ["$post_id", "$$post_id"] },
+                ],
+              },
+            },
+          },
+          { $project: { post_id: 0, readTime: 0 } },
+        ],
+        as: "likedCheck",
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "post_id",
+        as: "likes"
+      }
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: [
+            { $arrayElemAt: ["$bookmarkedCheck", 0] },
+            { $arrayElemAt: ["$likedCheck", 0] },
+            "$$ROOT",
+          ],
+        },
+      },
+    },
+    {
+      $addFields: { bookmarked: { $gt: ["$user_id_bookmarked", null] } },
+    },
+    {
+      $addFields: { liked: { $gt: ["$user_id_liked", null] } },
+    },
+    {
+      $addFields: { likesCount: { $size: "$likes" } },
+    },
+    { $sort : { likesCount : -1 } }
+    ])
+  },
   getBookmarks: ({ user_id }) => {
     return Post.aggregate([
       {

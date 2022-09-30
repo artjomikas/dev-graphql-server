@@ -76,6 +76,7 @@ const schema = buildSchema(`
   
   type Query {
     getAllPosts(user: String): [Post]
+    getPopularPosts(user: String): [Post]
     getPost(id: ID): Post
     getBookmarks(user_id: String): [Post]
     getLikes(user_id: String): [Post]
