@@ -42,6 +42,9 @@ const schema = buildSchema(`
     twitter: String
     github: String
     website: String
+    likesCount: Int
+    bookmarksCount: Int
+    articlesCount: Int
   }
 
   input PostInput {

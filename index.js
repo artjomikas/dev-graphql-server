@@ -4,7 +4,7 @@ const cors = require("cors");
 const schema = require("./schema/schema.js");
 const connectDB = require("./config/config");
 const { Post } = require("./models/Post");
-const { userModel } = require("./models/User");
+const { User } = require("./models/User");
 const colors = require("colors");
 const Bookmark = require("./models/Bookmark");
 const Like = require("./models/Like");
@@ -98,11 +98,7 @@ const root = {
       },
     ]);
   },
-  getUser: ({ id }) => {
-    return userModel.find({ _id: id });
-  },
   getBookmarks: ({ user_id }) => {
-    // return Post.find({ $or: [{ 'likes.liked_user_id': user_id }, { 'bookmarks.bookmarked_user_id': user_id }] });
     return Post.aggregate([
       {
         $addFields: { bookmarkedCheck: null },
@@ -214,8 +210,57 @@ const root = {
     const post = new Post({ ...input });
     return post.save();
   },
+  getUser: ({ id }) => {
+    return User.aggregate([ 
+      {
+        $addFields: { likes: null },
+      },
+      {
+        $addFields: { bookmarks: null },
+      },
+      {
+        $addFields: { articles: null },
+      },
+      {
+        $lookup: {
+          from: "likes",
+          localField: "_id",
+          foreignField: "user_id_liked",
+          as: "likes"
+        }
+      },
+      {
+        $lookup: {
+          from: "bookmarks",
+          localField: "_id",
+          foreignField: "user_id_bookmarked",
+          as: "bookmarks"
+        }
+      },
+      {
+        $lookup: {
+          from: "posts",
+          localField: "_id",
+          foreignField: "author._id",
+          as: "articles"
+        }
+      },
+      {
+        $addFields: { likesCount: { $size: "$likes" } },
+      },      
+      {
+        $addFields: { bookmarksCount: { $size: "$bookmarks" } },
+      },
+      {
+        $addFields: { articlesCount: { $size: "$articles" } },
+      },
+      {
+        $match: { _id: id }
+      }
+     ]);
+  },
   addUser: ({ input }) => {
-    const user = new userModel({ ...input });
+    const user = new User({ ...input });
     return user.save();
   },
 };
