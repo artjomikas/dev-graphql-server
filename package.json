@@ -7,12 +7,9 @@
     "node": "16.14.0"
   },
   "scripts": {
-    "dev": "react-scripts start",
-    "start": "serve -s build",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "heroku-postbuild": "npm run build"
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +24,6 @@
     "metadata-scraper": "^0.2.60",
     "mongoose": "^6.5.4",
     "nodemon": "^2.0.19",
-    "react-scripts": "^5.0.1",
     "serve": "^14.0.1"
   }
 }
