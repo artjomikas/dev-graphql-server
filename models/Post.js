@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const { UserSchema } = require('./User')
+const { LikeSchema } = require('./Like')
+const { CommentSchema } = require('./Comment')
 
 const PostSchema = new mongoose.Schema({
   title: {
@@ -21,10 +23,10 @@ const PostSchema = new mongoose.Schema({
     type: String,
   },
   author: {
-    type: UserSchema
+    type: [UserSchema]
   },
   likes: {
-    type: [String]
+    type: [LikeSchema]
   },
   bookmarks: {
     type: [String]
@@ -34,9 +36,12 @@ const PostSchema = new mongoose.Schema({
   },
   liked: {
     type: Boolean
-  }
+  },
+  comments: {
+    type: [CommentSchema]
+  },
 }, { timestamps: true })
 
 const Post = mongoose.model('Posts', PostSchema)
 
-module.exports = {Post, PostSchema}
+module.exports = { Post, PostSchema }

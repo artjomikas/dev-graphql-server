@@ -10,13 +10,29 @@ const schema = buildSchema(`
     readTime: Int!
     likesNum: Int
     description: String
-    author: User!
+    author: [User]
     createdAt: String 
     status: String
+    likes: [Like]
     bookmarked: Boolean
     liked: Boolean
     user_id: String
     likesCount: Int
+    commentCount: Int
+    comments: [Comment]
+  }
+
+  type Comment {
+    id: ID
+    text: String
+    author: User
+  }
+
+  input CommentInput {
+    id: ID
+    text: String!
+    post_id: ID!
+    author: UserInput!
   }
 
   type Bookmark {
@@ -31,11 +47,29 @@ const schema = buildSchema(`
     user_id_liked: String!
   }
 
+  type PostEdge {
+    node: Post!
+    cursor: String!
+  }
+
+  type PostConnection {
+    totalCount: Int
+    edges: [PostEdge!]
+    pageInfo: PageInfo
+  }
+
+  type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
+  }
+
   type User {
     _id: String
-    username: String!
-    imageURL: String!
-    name: String!
+    username: String
+    imageURL: String
+    name: String
     email: String
     provider: String
     bio: String
@@ -52,7 +86,7 @@ const schema = buildSchema(`
     title: String!
     imageURL: String!
     permaLink: String!
-    readTime: Int!
+    readTime: Int
     likesNum: Int
     description: String
     author: UserInput!
@@ -63,9 +97,9 @@ const schema = buildSchema(`
 
   input UserInput {
     _id: String
-    username: String!
-    imageURL: String!
-    name: String!
+    username: String
+    imageURL: String
+    name: String
     email: String
     provider: String
     bio: String
@@ -77,7 +111,7 @@ const schema = buildSchema(`
   type Query {
     getAllPosts(user: String): [Post]
     getPopularPosts(user: String): [Post]
-    getPost(id: ID): Post
+    getPost(user: String, id: String): [Post]
     getBookmarks(user_id: String): [Post]
     getLikes(user_id: String): [Post]
     getLikesCount(user_id: String): Int
@@ -92,6 +126,7 @@ const schema = buildSchema(`
     createPost(input: PostInput): Post
     addLike(post_id: ID, user_id: String): Like
     removeLike(post_id: ID, user_id: String): Like
+    addComment(input: CommentInput): Post
     addBookmark(post_id: ID, user_id: String ): Bookmark
     removeBookmark(post_id: ID, user_id: String): Bookmark
   }
