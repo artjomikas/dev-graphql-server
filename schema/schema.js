@@ -26,6 +26,7 @@ const schema = buildSchema(`
     id: ID
     text: String
     author: User
+    createdAt: String 
   }
 
   input CommentInput {

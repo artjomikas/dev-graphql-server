@@ -171,14 +171,6 @@ const root = {
       },
       {
         $lookup: {
-          from: "comments",
-          localField: "_id",
-          foreignField: "post_id",
-          as: "comments"
-        }
-      },
-      {
-        $lookup: {
           from: "users",
           localField: "author._id",
           foreignField: "_id",
