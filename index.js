@@ -407,7 +407,8 @@ const root = {
     return Like.findOneAndRemove({ user_id_liked: user_id, post_id: post_id });
   },
   addComment: ({ input }) => {
-    return Post.findOneAndUpdate(({ _id: input.post_id },  { $push: { comments: input } }));;
+    console.log(input);
+    return Post.findByIdAndUpdate({ _id: input.post_id }, { $push: { comments: input } });
   },
   updateUser: ({ user_id, data }) => {
     return User.findOneAndUpdate({ _id: user_id }, { $set: data })
